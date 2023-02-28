@@ -46,7 +46,7 @@ export class Ray {
 
     setPosition(position: Vector): void {
         this.position.x = position.x;
-        this.position.y = position;
+        this.position.y = position.y;
     }
 
 }
