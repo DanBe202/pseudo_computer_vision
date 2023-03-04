@@ -54,7 +54,15 @@ export class Figure {
                 points.push(nearestPoint);
             }
         });
+        let farthestPoint = points[0];
+        for (let point of points) {
+            if (Vector.dist(this.center, point) > Vector.dist(this.center, farthestPoint)) {
+                farthestPoint = point;
+            }
+        }
         points.forEach(point => p5.line(this.center.x, this.center.y, point.x, point.y));
+        this.direction.setHeading(farthestPoint.heading());
+        this.moveForward();
     }
 
     rotate(isRight: boolean): void {
@@ -68,5 +76,12 @@ export class Figure {
         this.center.x += this.direction.x;
         this.center.y += this.direction.y;
         this.createRays();
+    }
+
+    private getCircleCoordinate(angle: number): Vector {
+        const coordinates = p5.createVector();
+        coordinates.x = this.center.x + this.r * Math.cos(p5.radians(angle));
+        coordinates.y = this.center.y + this.r * Math.sin(p5.radians(angle));
+        return coordinates;
     }
 }

@@ -2,6 +2,9 @@ import './style.css';
 import {BaseSketch} from './base/sketch.base';
 import {Figure} from "./models/figure";
 import {Wall} from "./models/wall";
+import {Vector} from "p5";
+
+(window as any).VectorTemp = Vector;
 
 class Sketch extends BaseSketch {
 
@@ -9,7 +12,7 @@ class Sketch extends BaseSketch {
 
   private readonly height: number = 600;
 
-  private readonly figure: Figure = new Figure(300, 300);
+  private readonly figure: Figure = new Figure(50, 50);
 
   private readonly walls: Wall[] = [
     new Wall(0, 0, this.width, 0),
@@ -28,7 +31,6 @@ class Sketch extends BaseSketch {
 
   draw(): void {
     p5.background(255);
-    this.figure.setPosition(p5.mouseX, p5.mouseY);
     this.walls.forEach(wall => wall.draw());
     this.figure.look(this.walls);
     this.figure.draw();

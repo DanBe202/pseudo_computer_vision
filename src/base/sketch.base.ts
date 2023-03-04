@@ -15,6 +15,8 @@ export abstract class BaseSketch implements Sketch {
 
   abstract draw(): void;
 
+  abstract keyPressed(): void;
+
   constructor() {
     const sketch = this._createSketch();
     this._p5Sketch = new P5(sketch);
@@ -26,6 +28,7 @@ export abstract class BaseSketch implements Sketch {
       p5.preload = this.preload.bind(this);
       p5.setup = this.setup.bind(this);
       p5.draw = this.draw.bind(this);
+      p5.keyPressed = this.keyPressed.bind(this);
     };
   }
 }

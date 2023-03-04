@@ -26,8 +26,8 @@ export class Ray {
 
         const x3 = this.position.x;
         const y3 = this.position.y;
-        const x4 = this.position.x + this.direction.x;
-        const y4 = this.position.y + this.direction.y;
+        const x4 = this.position.x - this.direction.x;
+        const y4 = this.position.y - this.direction.y;
 
         const denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
         if (denominator === 0) {
@@ -39,9 +39,12 @@ export class Ray {
         if (t < 0 || t > 1 && u < 0 || u > 1){
             return null;
         }
-        return p5.createVector(x1 + t * (x2 - x1),
+        const direction = p5.createVector(
+          x1 + t * (x2 - x1),
             y1 + t * (y2 - y1)
         );
+        direction.setHeading(this.direction.heading());
+        return direction;
     }
 
     setPosition(position: Vector): void {
