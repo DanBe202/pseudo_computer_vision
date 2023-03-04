@@ -6,23 +6,31 @@ export class Figure {
 
     private readonly center: Vector;
     private readonly r: number = 20;
-    private readonly rays: Ray[] = [];
-    private readonly fov: number = 70;
+    private rays: Ray[] = [];
+    private readonly fov: number = 110;
+    private readonly direction: Vector;
 
     constructor(x: number, y: number) {
         this.center = p5.createVector(x, y);
+        this.direction = Vector.fromAngle(p5.radians(0));
         this.createRays();
     }
 
     draw(): void {
-        p5.circle(this.center.x, this.center.y, this.r * 2);
+        p5.push();
+        p5.translate(this.center.x, this.center.y);
+        p5.rotate(this.direction.heading());
+        p5.circle(0, 0, this.r * 2);
+        p5.pop();
     }
 
     createRays(): void {
-        for (let i = -this.fov / 2; i < this.fov / 2; i += 2) {
-            this.rays.push(
-                new Ray(this.center, p5.radians(i))
-            );
+        this.rays = [];
+        const leftEdge = (-this.fov / 2) + p5.degrees(this.direction.heading());
+        const rightEdge = (this.fov / 2) + p5.degrees(this.direction.heading());
+        for (let angle = leftEdge; angle < rightEdge; angle += 5) {
+            const coordinates = this.getCircleCoordinate(angle);
+            this.rays.push(new Ray(coordinates, p5.radians(angle)));
         }
     }
 
@@ -49,9 +57,16 @@ export class Figure {
         points.forEach(point => p5.line(this.center.x, this.center.y, point.x, point.y));
     }
 
-    setPosition(x: number, y: number): void {
-        this.center.x = x;
-        this.center.y = y;
-        this.rays.forEach(ray => ray.setPosition(this.center));
+    rotate(isRight: boolean): void {
+        const angle = p5.degrees(this.direction.heading());
+        const rotateAngle = isRight ? 5 : -5;
+        this.direction.setHeading(p5.radians(angle + rotateAngle));
+        this.createRays();
+    }
+
+    moveForward(): void {
+        this.center.x += this.direction.x;
+        this.center.y += this.direction.y;
+        this.createRays();
     }
 }
