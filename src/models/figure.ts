@@ -22,6 +22,7 @@ export class Figure {
         p5.rotate(this.direction.heading());
         p5.circle(0, 0, this.r * 2);
         p5.pop();
+        // this.rays.forEach(ray => ray.draw());
     }
 
     createRays(): void {
@@ -36,32 +37,42 @@ export class Figure {
 
     look(walls: Wall[]): void {
         const points: Vector[] = [];
+        let farthestRay: Ray | null = null;
+        let farthestWall: Vector | null = null;
         this.rays.forEach(ray => {
-            let nearestPoint: Vector | null = null;
+            let nearestWall: Vector | null = null;
             walls.forEach(wall => {
                 const point = ray.cast(wall);
                 if (!point) {
                     return;
                 }
-                if (!nearestPoint) {
-                    nearestPoint = point;
+                if (!nearestWall) {
+                    nearestWall = point;
                 }
-                if (Vector.dist(this.center, point) < Vector.dist(this.center, nearestPoint)) {
-                    nearestPoint = point;
+                if (Vector.dist(this.center, point) < Vector.dist(this.center, nearestWall)) {
+                    nearestWall = point;
                 }
             });
-            if (nearestPoint) {
-                points.push(nearestPoint);
+            if (nearestWall) {
+                points.push(nearestWall);
+            }
+            if (!farthestWall) {
+                farthestWall = nearestWall;
+                farthestRay = ray;
+            }
+            if (Vector.dist(this.center, nearestWall!) > Vector.dist(this.center, farthestWall!)) {
+                farthestWall = nearestWall;
+                farthestRay = ray;
             }
         });
-        let farthestPoint = points[0];
-        for (let point of points) {
-            if (Vector.dist(this.center, point) > Vector.dist(this.center, farthestPoint)) {
-                farthestPoint = point;
-            }
-        }
+        // let farthestPoint = points[0];
+        // for (let point of points) {
+        //     if (Vector.dist(this.center, point) > Vector.dist(this.center, farthestPoint)) {
+        //         farthestPoint = point;
+        //     }
+        // }
         points.forEach(point => p5.line(this.center.x, this.center.y, point.x, point.y));
-        this.direction.setHeading(farthestPoint.heading());
+        this.direction.setHeading(farthestRay!.direction.heading());
         this.moveForward();
     }
 

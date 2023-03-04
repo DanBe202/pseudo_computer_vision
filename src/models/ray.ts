@@ -4,7 +4,7 @@ import {Wall} from "./wall";
 export class Ray {
 
     private readonly position: Vector;
-    private readonly direction: Vector;
+    readonly direction: Vector;
 
     constructor(position: Vector, angle: number) {
         this.position = position;
@@ -39,12 +39,10 @@ export class Ray {
         if (t < 0 || t > 1 && u < 0 || u > 1){
             return null;
         }
-        const direction = p5.createVector(
+        return p5.createVector(
           x1 + t * (x2 - x1),
             y1 + t * (y2 - y1)
         );
-        direction.setHeading(this.direction.heading());
-        return direction;
     }
 
     setPosition(position: Vector): void {
